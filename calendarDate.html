@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="calendar_component.css">
+    <link rel="stylesheet" href="reset.css">
+</head>
+<body>
+    <section id="left">
+        <div class="date-container">
+            <div class="top-bar">
+                <!-- month and year -->
+
+            </div >
+            <div class="dates">
+<!--
+                <div class="date"> S </div>
+                <div class="date"> M </div>
+                <div class="date"> T </div>
+                <div class="date"> W </div>
+                <div class="date"> T </div>
+                <div class="date"> F </div>
+                <div class="date"> S </div>
+-->
+             </div>
+        </div>
+    </section>
+    <section class="right">
+
+    </section>
+
+<script>
+
+    var daysWeek = ['S','M','T','W','T','F','S'];
+    var months = ['January','February','March','April','May','June','July', 'August','September','October',
+        'November', 'December'];
+
+
+    function createMonthArray(){
+        var month = [];
+        var curr_date = new Date();
+        var first_day = (new Date(curr_date.getFullYear(), curr_date.getMonth(),1)).getDay();
+        var curr_last_date = new Date(curr_date.getFullYear(), curr_date.getMonth() + 1, 0);
+        //get last day of current month
+
+        var curr_last_day = curr_last_date.getDay();
+
+        //get prev month lingering dates
+          var prev_month_last_date = new Date(curr_date.getFullYear(), curr_date.getMonth(),0);
+
+        for(var i = 0, len = 6 - first_day; i<len ; i++ ){
+            //month.unshift(prev_month_last_date.getDate() - i);
+            month.unshift(new dateObject(prev_month_last_date.getDate() - i, 0));
+        }
+
+        //get current months dates
+
+        for(var i = 0, len = curr_last_date.getDate(); i < len ; i++ ){
+            month.push(new dateObject(i+1, 1));
+        }
+        //get next months oncoming dates
+        for(var i = 0, len = 6 - curr_last_day ; i < len ; i++){
+            month.push(new dateObject(i+1, 2));
+        }
+        //console.log(month);
+        return month;
+    }
+
+
+    function dateObject(date, monthType, appointment/*array*/){
+        //0 prev 1 curr 2 next
+        this.date = date;
+        this.monthType = monthType;
+    }
+
+    function createDivs(){
+
+
+        var container = document.querySelector('div.date-container');
+        var dates =  document.querySelector('div.dates');
+        //container.innerHTML = '';
+        var curr_date = new Date();
+        var p = document.createElement('p');
+        p.innerHTML = months[curr_date.getMonth()]+', '+ curr_date.getFullYear();
+
+        dates.appendChild(p);
+        for(var i =0 ; i < daysWeek.length; i++){
+            var weekDiv = document.createElement('div');
+            weekDiv.className ='date';
+            weekDiv.innerHTML = daysWeek[i];
+            dates.appendChild(weekDiv);
+        }
+
+        //for dates
+        var dateList =  createMonthArray();
+
+            for(var j = 0; j < dateList.length; j++){
+                var className;
+                //console.log(dateList[j].monthType);
+                switch (dateList[j].monthType) {
+                    case 0:
+                        className = 'date prev-month';
+                        break;
+                    case 1:
+                        className = 'date';
+                        break;
+                    case 2:
+                        className = 'date next-month';
+                        break;
+                }
+               // console.log(className);
+                var dateDiv = document.createElement('div');
+                dateDiv.className = className;
+                dateDiv.innerHTML = dateList[j].date;
+                dates.appendChild(dateDiv);
+        }
+    };
+
+
+    document.addEventListener('DOMContentLoaded', function(){
+        createDivs();
+    });
+
+
+</script>
+</body>
+</html>
